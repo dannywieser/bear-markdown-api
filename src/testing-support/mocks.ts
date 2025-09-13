@@ -42,7 +42,7 @@ export const mockBearNote = (overrides?: Partial<BearNote>) =>
     ZMODIFICATIONDATE: 'mdate',
     ZTEXT: 'text',
     ZTITLE: 'title',
-    ZUNIQUEIDENTIFIER: '1',
+    ZUNIQUEIDENTIFIER: 'ABC123',
     ...overrides,
   }) as unknown as BearNote
 
