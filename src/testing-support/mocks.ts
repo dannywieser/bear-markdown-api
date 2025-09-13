@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 
 import { Config } from '../config'
+import { BearNote } from '../server/interfaces/bear/bear.types'
 import { MarkdownNote } from '../types'
 
 /**
@@ -34,13 +35,16 @@ export const mockConfig = (overrides?: Partial<Config>): Config => ({
   ...overrides,
 })
 
-export const mockBearNote = (id = 'abc123') => ({
-  ZCREATIONDATE: 4,
-  ZMODIFICATIONDATE: 5,
-  ZTEXT: `${id} text`,
-  ZTITLE: `${id} title`,
-  ZUNIQUEIDENTIFIER: id,
-})
+export const mockBearNote = (overrides?: Partial<BearNote>) =>
+  ({
+    Z_PK: 1,
+    ZCREATIONDATE: 'cdate',
+    ZMODIFICATIONDATE: 'mdate',
+    ZTEXT: 'text',
+    ZTITLE: 'title',
+    ZUNIQUEIDENTIFIER: '1',
+    ...overrides,
+  }) as unknown as BearNote
 
 export const mockMarkdownNote = (overrides?: Partial<MarkdownNote>): MarkdownNote => ({
   created: new Date(),
