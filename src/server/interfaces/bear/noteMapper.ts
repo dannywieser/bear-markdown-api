@@ -8,5 +8,5 @@ export async function mapNotes(db: Database, config: Config): Promise<MarkdownNo
   const bearNotes = await loadNotes(db)
   const allTags = await loadTags(db)
 
-  return Promise.all(bearNotes.map(async (note) => await mapNote(note, db, config, allTags)))
+  return Promise.all(bearNotes.map((note) => mapNote(note, db, config, allTags)))
 }
