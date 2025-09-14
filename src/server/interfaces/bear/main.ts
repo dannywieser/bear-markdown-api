@@ -3,8 +3,7 @@ import { lexer } from '../../../marked/main'
 import { MarkdownNote } from '../../../types'
 import { MarkdownInit } from '../interfaces.types'
 import { backupBearDatabase, loadDatabase } from './database'
-import { getFilesForNote } from './files'
-import { processNotes } from './processNotes'
+import { mapNotes } from './noteMapper'
 
 export async function allNotes(
   _params: unknown,
@@ -19,7 +18,7 @@ export async function init(config: Config): Promise<MarkdownInit> {
     throw new Error('unable to backup bear database')
   }
   const db = await loadDatabase(backupFile)
-  const allNotes = await processNotes(db, config)
+  const allNotes = await mapNotes(db, config)
   return { allNotes, config, db }
 }
 
@@ -29,12 +28,10 @@ export async function noteById(
 ): Promise<MarkdownNote | null> {
   const { allNotes = [] } = init
   const note = allNotes.find(({ id }) => id === findNoteId)
-  const files = note ? await getFilesForNote(note, init) : []
   return note
     ? {
         ...note,
-        files,
-        tokens: lexer(note.text ?? '', allNotes, files),
+        tokens: lexer(note, allNotes),
       }
     : null
 }

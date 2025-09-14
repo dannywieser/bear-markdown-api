@@ -4,9 +4,8 @@ import { Database } from 'sqlite'
 import { lexer } from '../../../marked/main'
 import { asMock, mockConfig, mockMarkdownNote } from '../../../testing-support'
 import { backupBearDatabase, loadDatabase } from './database'
-import { getFilesForNote } from './files'
 import { allNotes, init, noteById } from './main'
-import { processNotes } from './processNotes'
+import { mapNotes } from './noteMapper'
 
 jest.mock('marked', () => ({
   marked: {
@@ -14,30 +13,25 @@ jest.mock('marked', () => ({
     use: jest.fn(),
   },
 }))
-jest.mock('./files')
 jest.mock('./database')
-jest.mock('./processNotes')
+jest.mock('./noteMapper')
 jest.mock('../../../marked/main')
 
 const db = {} as Database
-beforeEach(() => {
-  asMock(getFilesForNote).mockResolvedValue([])
-})
-
 describe('bear interface functions', () => {
   test('init backs up the database, loads it, and returns allNotes', async () => {
     asMock(backupBearDatabase).mockReturnValue('backup.sqlite')
 
     asMock(loadDatabase).mockResolvedValue(db)
     const notes = [mockMarkdownNote({ id: 'a' }), mockMarkdownNote({ id: 'b' })]
-    asMock(processNotes).mockResolvedValue(notes)
+    asMock(mapNotes).mockResolvedValue(notes)
     const config = mockConfig()
 
     const result = await init(config)
 
     expect(backupBearDatabase).toHaveBeenCalled()
     expect(loadDatabase).toHaveBeenCalledWith('backup.sqlite')
-    expect(processNotes).toHaveBeenCalledWith(db, config)
+    expect(mapNotes).toHaveBeenCalledWith(db, config)
     expect(result).toEqual({ allNotes: notes, config, db })
   })
 
@@ -54,29 +48,7 @@ describe('bear interface functions', () => {
       files: [],
       tokens: tokens,
     })
-    expect(lexer).toHaveBeenCalledWith('note text', allNotes, [])
-  })
-
-  test('files returned by getFilesForNote are included in the response', async () => {
-    const allNotes = [
-      mockMarkdownNote({ id: 'abc', primaryKey: 123 }),
-      mockMarkdownNote({ id: 'def' }),
-    ]
-    const tokens = ['token'] as unknown as TokensList
-    asMock(lexer).mockReturnValue(tokens)
-    const config = mockConfig()
-    const files = [
-      { directory: 'a', file: 'a', path: 'a' },
-      { directory: 'b', file: 'b', path: 'b' },
-    ]
-    asMock(getFilesForNote).mockResolvedValue(files)
-
-    const init = { allNotes, config, db }
-    const result = await noteById('def', init)
-
-    expect(result?.files).toEqual(files)
-    expect(lexer).toHaveBeenCalledWith('note text', allNotes, files)
-    expect(getFilesForNote).toHaveBeenCalledWith(allNotes[1], init)
+    expect(lexer).toHaveBeenCalledWith(allNotes[0], allNotes)
   })
 
   test('noteById returns null when note not found', async () => {

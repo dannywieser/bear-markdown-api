@@ -30,7 +30,10 @@ const notes = [mockMarkdownNote({ id: 'a' }), mockMarkdownNote({ id: 'b' })]
 
 describe('lexer', () => {
   test('calls marked.use with highlight, tag, and wikilink extensions', () => {
-    lexer('some markdown', notes, [])
+    const note = mockMarkdownNote()
+
+    lexer(note, notes)
+
     expect(makeWikilinkExtension).toHaveBeenCalledWith(notes)
     expect(makeBearImagesExtension).toHaveBeenCalledWith([])
     expect(marked.use).toHaveBeenCalledWith({
@@ -39,8 +42,11 @@ describe('lexer', () => {
   })
 
   test('returns tokens from marked.lexer', () => {
-    const result = lexer('some markdown', notes, [])
-    expect(marked.lexer).toHaveBeenCalledWith('some markdown')
+    const note = mockMarkdownNote()
+
+    const result = lexer(note, notes)
+
+    expect(marked.lexer).toHaveBeenCalledWith(note.text)
     expect(result).toEqual(['token1', 'token2'])
   })
 })
