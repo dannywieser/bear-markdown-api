@@ -19,14 +19,17 @@ export async function getFilesForNote({ Z_PK }: BearNote, config: Config, db: Da
 }
 
 export async function getTagsForNote(
-  { Z_PK }: BearNote,
+  { Z_PK, ZUNIQUEIDENTIFIER }: BearNote,
   allTags: MarkdownTag[],
   db: Database
 ): Promise<string[]> {
   const noteTags = await db.all<BearTagRel[]>('SELECT * FROM Z_5TAGS WHERE Z_5NOTES = ?', Z_PK)
   return noteTags.map(({ Z_13TAGS }) => {
     const matched = allTags.find(({ id }) => id === Z_13TAGS)
-    return matched ? matched.title : 'invalid'
+    if (!matched) {
+      console.error(`invalid tag mapping for note with id "${ZUNIQUEIDENTIFIER}": ${Z_13TAGS}`)
+    }
+    return matched ? matched.title : `invalid tag id: ${Z_13TAGS}`
   })
 }
 
@@ -56,8 +59,8 @@ export const mapNote = async (
   allTags: MarkdownTag[]
 ): Promise<MarkdownNote> => {
   const { ZCREATIONDATE, ZMODIFICATIONDATE, ZTEXT, ZTITLE, ZUNIQUEIDENTIFIER: id } = note
-  const files = note ? await getFilesForNote(note, config, db) : []
-  const tags = note ? await getTagsForNote(note, allTags, db) : []
+  const files = await getFilesForNote(note, config, db)
+  const tags = await getTagsForNote(note, allTags, db)
 
   return {
     created: convertDate(ZCREATIONDATE),

@@ -11,6 +11,7 @@ const setupMocks = () => {
   const db = { all: jest.fn() } as unknown as Database
   const note = mockBearNote({ Z_PK: 1 })
   asMock(convertDate).mockImplementation((date: string) => `converted-${date}` as unknown as Date)
+  jest.spyOn(console, 'error').mockImplementation(() => {})
   return { config, db, note }
 }
 
@@ -73,7 +74,7 @@ describe('getTagsForNote', () => {
 
     const result = await getTagsForNote(note, allTags, db)
 
-    expect(result).toEqual(['invalid'])
+    expect(result).toEqual(['invalid tag id: 40'])
   })
 
   test('returns empty array when db returns empty array', async () => {
