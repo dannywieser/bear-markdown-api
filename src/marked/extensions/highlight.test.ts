@@ -55,7 +55,7 @@ describe('highlight tokenizer', () => {
   describe('highlight start', () => {
     test.each([
       ['valid highlight', 'Some text ==🟡highlight== more text', 10],
-      ['no highlight', 'No highlight here', -1],
+      ['no highlight', 'No highlight here', undefined],
       ['incomplete highlight', '==🟡missing end', 0],
     ])('returns %s', (_desc, src, expected) => {
       const index = start(src)
