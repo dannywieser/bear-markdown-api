@@ -1,4 +1,5 @@
 export interface BearFile {
+  Z_ENT: number
   ZFILENAME: string
   ZUNIQUEIDENTIFIER: string
 }
