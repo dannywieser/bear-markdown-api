@@ -24,9 +24,11 @@ export const mockConfig = (overrides?: Partial<Config>): Config => ({
   bearConfig: {
     appDataRoot: '/path/to/bear',
     dbFile: 'dbfile.sqlite',
+    fileRoot: 'files/',
     imageRoot: 'images/',
     openInBearUrl: '/path/in/bear?id=',
   },
+  fileUriRoot: '/files',
   host: 'localhost',
   imageUriRoot: '/images',
   noteWebPath: '/path/to/web',

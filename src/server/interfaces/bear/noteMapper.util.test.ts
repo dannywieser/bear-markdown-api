@@ -25,8 +25,9 @@ describe('getFilesForNote', () => {
   test('correctly returns mapped results for files from DB query', async () => {
     const { config, db, note } = setupMocks()
     asMock(db.all).mockResolvedValueOnce([
-      { ZFILENAME: 'file1.png', ZUNIQUEIDENTIFIER: 'dir1' },
-      { ZFILENAME: 'file2.jpg', ZUNIQUEIDENTIFIER: 'dir2' },
+      { Z_ENT: 9, ZFILENAME: 'file1.png', ZUNIQUEIDENTIFIER: 'dir1' },
+      { Z_ENT: 9, ZFILENAME: 'file2.jpg', ZUNIQUEIDENTIFIER: 'dir2' },
+      { Z_ENT: 8, ZFILENAME: 'file3.jpg', ZUNIQUEIDENTIFIER: 'dir3' },
     ])
 
     const result = await getFilesForNote(note, config, db)
@@ -34,6 +35,7 @@ describe('getFilesForNote', () => {
     expect(result).toEqual([
       { directory: 'dir1', file: 'file1.png', path: '/images/dir1/file1.png' },
       { directory: 'dir2', file: 'file2.jpg', path: '/images/dir2/file2.jpg' },
+      { directory: 'dir3', file: 'file3.jpg', path: '/files/dir3/file3.jpg' },
     ])
     expect(db.all).toHaveBeenCalledWith('SELECT * FROM ZSFNOTEFILE where ZNOTE = ?', 1)
   })

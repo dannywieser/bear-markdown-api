@@ -2,8 +2,8 @@ import { marked } from 'marked'
 
 import { MarkdownNote } from '../types'
 import { highlightExtension, tagExtension } from './extensions'
+import { makeBearFilesExtension } from './extensions/bearFiles'
 import { makeBearImagesExtension } from './extensions/bearImages'
-import { makeBearFilesExtension } from './extensions/bearLink'
 import { makeWikilinkExtension } from './extensions/wikilink'
 
 export function lexer(note: MarkdownNote, allNotes: MarkdownNote[]) {
