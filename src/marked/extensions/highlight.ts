@@ -18,10 +18,10 @@ const getColor = (emoji: string = '🟡') => {
 }
 
 const rule = /==([\p{Emoji}])([^\p{Emoji}=]+)==/u
-export const start = (src: string) => src.match(rule)?.index
+export const start = (src: string) => (src.indexOf('==') > -1 ? src.indexOf('==') : undefined)
 export const tokenizer = (src: string) => {
   const match = rule.exec(src)
-  if (match) {
+  if (match && match.index === 0) {
     return {
       color: getColor(match[1]),
       raw: match[0],

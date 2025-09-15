@@ -18,6 +18,10 @@ describe('wikilink extension', () => {
     expect(start('no wikilink here')).toBeUndefined()
   })
 
+  test('returns undefined for wikilink that is not at the start of the string', () => {
+    expect(tokenizer('some other text and then a [[WikiLink]]')).toBeUndefined()
+  })
+
   test('tokenizer returns token for a valid wikilink', () => {
     const src = '[[Note-Two]]'
     const token = tokenizer(src)
