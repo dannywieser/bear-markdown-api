@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from 'express'
 import morgan from 'morgan'
 
 import { loadConfig } from '../config'
+import { parseQuery } from './app.util'
 import { loadInterface } from './interfaces/load'
 
 const appMode = 'bear'
@@ -9,12 +10,14 @@ const appMode = 'bear'
 export const app = express()
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 
-app.get('/api/notes', async (params, res, next) => {
+app.get('/api/notes', async (req, res, next) => {
+  console.log(req.query)
+  const filter = parseQuery(req)
   const config = await loadConfig()
   const mode = loadInterface(appMode)
   const init = await mode.init(config)
   try {
-    const result = await mode.allNotes(params, init)
+    const result = await mode.allNotes(filter, init)
     res.json(result)
   } catch (err) {
     next(err)

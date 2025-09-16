@@ -1,5 +1,11 @@
 import { TokensList } from 'marked'
 
+export interface FilterOptions {
+  d?: number | undefined
+  m?: number | undefined
+  y?: number | undefined
+}
+
 export interface MarkdownNote {
   created: Date
   externalUrl: string
