@@ -5,6 +5,14 @@ export const filterNotes = (allNotes: MarkdownNote[], filters: FilterOptions) =>
     (note) => matchByCreatedOrModified(note, filters) || matchByDateInText(note, filters)
   )
 
+const matchPartialDate = (dates: Date[], { d, m, y }: FilterOptions) =>
+  dates.some((date) => {
+    if (y && date.getFullYear() !== y) return false
+    if (m && date.getMonth() + 1 !== m) return false
+    if (d && date.getDate() !== d) return false
+    return true
+  })
+
 // Extracts all dates in supported formats from a string
 export function extractDatesFromText(text: string): Date[] {
   // Regex for YYYY.MM.DD, YYYY-MM-DD, or YYYY/MM/DD
@@ -14,24 +22,12 @@ export function extractDatesFromText(text: string): Date[] {
 }
 
 export function matchByCreatedOrModified(note: MarkdownNote, filters: FilterOptions) {
-  const { d, m, y } = filters
   const dates = [note.created, note.modified].map((date) => new Date(date))
-  return dates.some((date) => {
-    if (y && date.getFullYear() !== y) return false
-    if (m && date.getMonth() + 1 !== m) return false
-    if (d && date.getDate() !== d) return false
-    return true
-  })
+  return matchPartialDate(dates, filters)
 }
 
 export function matchByDateInText(note: MarkdownNote, filters: FilterOptions) {
-  const { d, m, y } = filters
   const text = typeof note.text === 'string' ? note.text : ''
   const dates = extractDatesFromText(text)
-  return dates.some((date) => {
-    if (y && date.getFullYear() !== y) return false
-    if (m && date.getMonth() + 1 !== m) return false
-    if (d && date.getDate() !== d) return false
-    return true
-  })
+  return matchPartialDate(dates, filters)
 }
