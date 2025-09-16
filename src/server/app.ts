@@ -11,7 +11,6 @@ export const app = express()
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 
 app.get('/api/notes', async (req, res, next) => {
-  console.log(req.query)
   const filter = parseQuery(req)
   const config = await loadConfig()
   const mode = loadInterface(appMode)
