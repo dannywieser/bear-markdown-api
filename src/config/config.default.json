@@ -3,6 +3,7 @@
   "port": 4040,
   "apiUriRoot": "/api",
   "imageUriRoot": "/images",
+  "fileUriRoot": "/files",
   "noteWebPath": "/note",
   "backups": 5,
   "rootDir": "~/.bear-markdown-api",
@@ -10,6 +11,7 @@
     "openInBearUrl": "bear://x-callback-url/open-note?id=",
     "appDataRoot": "~/Library/Group Containers/9K33E3U3T4.net.shinyfrog.bear/Application Data",
     "dbFile": "database.sqlite",
-    "imageRoot": "Local Files/Note Images/"
+    "imageRoot": "Local Files/Note Images/",
+    "fileRoot": "Local Files/Note Files/"
   }
 }

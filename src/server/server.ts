@@ -17,13 +17,18 @@ export const startup = async () => {
   header1('🤖🐻 Bear Markdown API 🐻🤖')
   const config = await loadConfig()
   const {
-    bearConfig: { appDataRoot, imageRoot },
+    bearConfig: { appDataRoot, fileRoot, imageRoot },
+    fileUriRoot,
     imageUriRoot,
   } = config
 
   // image server
   const imageFsRoot = `${expandPath(appDataRoot)}/${imageRoot}`
   app.use(imageUriRoot, express.static(imageFsRoot))
+
+  // file server
+  const fileFsRoot = `${expandPath(appDataRoot)}/${fileRoot}`
+  app.use(fileUriRoot, express.static(fileFsRoot))
 
   const { host, port } = config
 

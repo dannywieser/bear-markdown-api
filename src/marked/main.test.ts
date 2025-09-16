@@ -2,6 +2,7 @@ import { marked } from 'marked'
 
 import { mockMarkdownNote } from '../testing-support'
 import { highlightExtension, tagExtension } from './extensions'
+import { makeBearFilesExtension } from './extensions/bearFiles'
 import { makeBearImagesExtension } from './extensions/bearImages'
 import { makeWikilinkExtension } from './extensions/wikilink'
 import { lexer } from './main'
@@ -16,6 +17,9 @@ jest.mock('marked', () => ({
 jest.mock('./extensions/bearImages', () => ({
   makeBearImagesExtension: jest.fn().mockReturnValue({ name: 'bearImage' }),
 }))
+jest.mock('./extensions/bearFiles', () => ({
+  makeBearFilesExtension: jest.fn().mockReturnValue({ name: 'bearFile' }),
+}))
 jest.mock('./extensions/highlight', () => ({
   highlightExtension: { name: 'highlight' },
 }))
@@ -29,15 +33,22 @@ jest.mock('./extensions/wikilink', () => ({
 const notes = [mockMarkdownNote({ id: 'a' }), mockMarkdownNote({ id: 'b' })]
 
 describe('lexer', () => {
-  test('calls marked.use with highlight, tag, and wikilink extensions', () => {
+  test('calls marked.use with highlight, tag, link and wikilink extensions', () => {
     const note = mockMarkdownNote()
 
     lexer(note, notes)
 
     expect(makeWikilinkExtension).toHaveBeenCalledWith(notes)
     expect(makeBearImagesExtension).toHaveBeenCalledWith([])
+    expect(makeBearFilesExtension).toHaveBeenCalledWith([])
     expect(marked.use).toHaveBeenCalledWith({
-      extensions: [{ name: 'bearImage' }, highlightExtension, tagExtension, { name: 'wikilink' }],
+      extensions: [
+        { name: 'bearImage' },
+        { name: 'bearFile' },
+        highlightExtension,
+        tagExtension,
+        { name: 'wikilink' },
+      ],
     })
   })
 
