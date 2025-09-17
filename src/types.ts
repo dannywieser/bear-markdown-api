@@ -5,6 +5,7 @@ export type FilterFunction = (note: MarkdownNote, filters: FilterOptions) => boo
 export interface FilterOptions {
   d?: number | undefined
   m?: number | undefined
+  tag?: string[] | undefined
   text?: string | undefined
   y?: number | undefined
 }

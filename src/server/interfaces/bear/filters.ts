@@ -1,11 +1,12 @@
 import { FilterFunction, FilterOptions, MarkdownNote } from '../../../types'
 
 export const filterNotes = (allNotes: MarkdownNote[], filters: FilterOptions) => {
-  const { d, m, text, y } = filters
+  const { d, m, tag, text, y } = filters
   const dateFilters = y || m || d
   const filterFunctions: FilterFunction[] = [
     ...(dateFilters ? [matchByCreatedOrModified, matchByDateInText] : []),
     ...(text ? [matchByTextInNote] : []),
+    ...(tag ? [matchByTagInNote] : []),
   ]
   if (filterFunctions.length === 0) return allNotes
   return allNotes.filter((note) => filterFunctions.some((fn) => fn(note, filters)))
@@ -46,3 +47,6 @@ export const matchByTextInNote = (
   note: MarkdownNote,
   { text: searchText = '' }: FilterOptions
 ): boolean => parseNoteText(note).includes(searchText)
+
+export const matchByTagInNote: FilterFunction = ({ tags }: MarkdownNote, { tag = [] }) =>
+  tag.some((t) => tags.includes(t))
