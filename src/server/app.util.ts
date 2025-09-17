@@ -3,7 +3,7 @@ import { Request } from 'express'
 import { FilterOptions } from '../types'
 
 export const parseQuery = (req: Request): FilterOptions => {
-  const { d, m, y } = req.query
+  const { d, m, text: textParam, y } = req.query
 
   const parseNum = (val: unknown) => {
     const num = Number(val)
@@ -13,6 +13,7 @@ export const parseQuery = (req: Request): FilterOptions => {
   return {
     d: parseNum(d),
     m: parseNum(m),
+    text: typeof textParam === 'string' ? textParam : undefined,
     y: parseNum(y),
   }
 }

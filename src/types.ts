@@ -1,8 +1,11 @@
 import { TokensList } from 'marked'
 
+export type FilterFunction = (note: MarkdownNote, filters: FilterOptions) => boolean
+
 export interface FilterOptions {
   d?: number | undefined
   m?: number | undefined
+  text?: string | undefined
   y?: number | undefined
 }
 
