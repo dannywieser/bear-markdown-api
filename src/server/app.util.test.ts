@@ -5,6 +5,31 @@ import { parseQuery } from './app.util'
 describe('parseQuery', () => {
   test.each([
     [
+      'returns undefined for missing tag param',
+      { query: {} },
+      { d: undefined, m: undefined, tag: undefined, text: undefined, y: undefined },
+    ],
+    [
+      'parses a single tag string into array',
+      { query: { tag: 'foo' } },
+      { d: undefined, m: undefined, tag: ['foo'], text: undefined, y: undefined },
+    ],
+    [
+      'parses an array of tag strings',
+      { query: { tag: ['foo', 'bar'] } },
+      { d: undefined, m: undefined, tag: ['foo', 'bar'], text: undefined, y: undefined },
+    ],
+    [
+      'returns undefined for non-string tag values',
+      { query: { tag: [123, 'foo'] } },
+      { d: undefined, m: undefined, tag: undefined, text: undefined, y: undefined },
+    ],
+    [
+      'parses tag with other params',
+      { query: { d: '1', tag: 'foo', y: '2020' } },
+      { d: 1, m: undefined, tag: ['foo'], text: undefined, y: 2020 },
+    ],
+    [
       'parses a valid text param',
       { query: { text: 'meeting' } },
       { d: undefined, m: undefined, text: 'meeting', y: undefined },

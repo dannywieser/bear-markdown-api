@@ -24,28 +24,33 @@ describe('filterNotes', () => {
       created: new Date(2023, 8, 16),
       id: '2023a',
       modified: new Date(2023, 8, 17),
+      tags: ['a', 'b', 'c'],
       text: 'Meeting notes for project.',
     }),
     mockMarkdownNote({
       created: new Date(2023, 3, 16),
       id: '2023b',
       modified: new Date(2023, 3, 17),
+      tags: [],
     }),
     mockMarkdownNote({
       created: new Date(2022, 0, 4),
       id: '2',
       modified: new Date(2022, 0, 2),
+      tags: ['c'],
       text: 'Random text.',
     }),
     mockMarkdownNote({
       created: new Date(2025, 11, 31),
       id: '3',
       modified: new Date(2026, 1, 1),
+      tags: ['a'],
     }),
     mockMarkdownNote({
       created: new Date(2020, 4, 5),
       id: '4',
       modified: new Date(2020, 4, 6),
+      tags: ['d'],
       text: '2025 is a big year.',
     }),
   ]
@@ -58,6 +63,8 @@ describe('filterNotes', () => {
     ['text search matches note text', { text: 'meeting' }, ['2023a']],
     ['text search matches no notes', { text: 'notfound' }, []],
     ['date or text match (any filter)', { text: '2025', y: 2023 }, ['2023a', '2023b', '4']],
+    ['tag filtering matches single tag', { tag: ['a'] }, ['2023a', '3']],
+    ['tag filtering matches multiple tags', { tag: ['b', 'd'] }, ['2023a', '4']],
     ['no filters returns all', {}, ['2023a', '2023b', '2', '3', '4']],
   ])('filters %s', (_desc, filters: FilterOptions, expected) => {
     const results = filterNotes(notes, filters)
