@@ -28,7 +28,6 @@ export function matchByCreatedOrModified(note: MarkdownNote, filters: FilterOpti
     const d = new Date(date)
     return new Date(d.getFullYear(), d.getMonth(), d.getDate())
   })
-  console.log(dates)
   return matchPartialDate(dates, filters)
 }
 

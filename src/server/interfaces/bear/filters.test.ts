@@ -6,10 +6,10 @@ describe('extractDatesFromText', () => {
   test.each([
     [
       'Today is 2023.09.16 and tomorrow is 2023.09.17',
-      [new Date('2023-09-16'), new Date('2023-09-17')],
+      [new Date(2023, 8, 16), new Date(2023, 8, 17)],
     ],
-    ['Event: 2022-01-01', [new Date('2022-01-01')]],
-    ['Deadline: 2025/12/31', [new Date('2025-12-31')]],
+    ['Event: 2022-01-01', [new Date(2022, 0, 1)]],
+    ['Deadline: 2025/12/31', [new Date(2025, 11, 31)]],
     ['No date here!', []],
   ])('extracts dates from "%s"', (input, expected) => {
     const dates = extractDatesFromText(input)
