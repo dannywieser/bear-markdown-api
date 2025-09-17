@@ -18,11 +18,17 @@ export function extractDatesFromText(text: string): Date[] {
   // Regex for YYYY.MM.DD, YYYY-MM-DD, or YYYY/MM/DD
   const datePattern = /\b(\d{4})[.\-/](\d{2})[.\-/](\d{2})\b/g
   const matches = [...text.matchAll(datePattern)]
-  return matches.map(([, year, month, day]) => new Date(`${year}-${month}-${day}`))
+  return matches.map(
+    ([, year, month, day]) => new Date(Number(year), Number(month) - 1, Number(day))
+  )
 }
 
 export function matchByCreatedOrModified(note: MarkdownNote, filters: FilterOptions) {
-  const dates = [note.created, note.modified].map((date) => new Date(date))
+  const dates = [note.created, note.modified].map((date) => {
+    const d = new Date(date)
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate())
+  })
+  console.log(dates)
   return matchPartialDate(dates, filters)
 }
 
