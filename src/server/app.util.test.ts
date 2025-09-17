@@ -44,6 +44,11 @@ describe('parseQuery', () => {
       { query: { d: '1', m: 'nope', y: '2020' } },
       { d: 1, m: undefined, text: undefined, y: 2020 },
     ],
+    [
+      'text param is forced to lowercase',
+      { query: { text: 'TEXT PARAM VALUE' } },
+      { text: 'text param value' },
+    ],
   ])('%s', (_desc, req, expected) => {
     expect(parseQuery(req as unknown as Request)).toEqual(expected)
   })

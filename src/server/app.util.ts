@@ -10,10 +10,12 @@ export const parseQuery = (req: Request): FilterOptions => {
     return typeof val === 'undefined' || val === '' || isNaN(num) ? undefined : num
   }
 
+  const parseString = (val: unknown) => (typeof val === 'string' ? val.toLowerCase() : undefined)
+
   return {
     d: parseNum(d),
     m: parseNum(m),
-    text: typeof textParam === 'string' ? textParam : undefined,
+    text: parseString(textParam),
     y: parseNum(y),
   }
 }

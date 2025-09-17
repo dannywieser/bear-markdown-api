@@ -45,4 +45,4 @@ export const matchByDateInText = (note: MarkdownNote, filters: FilterOptions) =>
 export const matchByTextInNote = (
   note: MarkdownNote,
   { text: searchText = '' }: FilterOptions
-): boolean => (searchText ? parseNoteText(note).includes(searchText.toLowerCase()) : false)
+): boolean => parseNoteText(note).includes(searchText)
