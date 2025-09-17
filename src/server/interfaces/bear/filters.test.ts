@@ -32,20 +32,20 @@ describe('filterNotes', () => {
       modified: new Date(2023, 3, 17),
     }),
     mockMarkdownNote({
-      created: new Date(2022, 1, 4),
+      created: new Date(2022, 0, 4),
       id: '2',
-      modified: new Date(2022, 1, 2),
+      modified: new Date(2022, 0, 2),
       text: 'Random text.',
     }),
     mockMarkdownNote({
-      created: new Date(2025, 12, 31),
+      created: new Date(2025, 11, 31),
       id: '3',
       modified: new Date(2026, 1, 1),
     }),
     mockMarkdownNote({
-      created: new Date(2020, 5, 5),
+      created: new Date(2020, 4, 5),
       id: '4',
-      modified: new Date(2020, 5, 6),
+      modified: new Date(2020, 4, 6),
       text: '2025 is a big year.',
     }),
   ]
