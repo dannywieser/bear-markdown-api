@@ -11,6 +11,7 @@ describe('extractDatesFromText', () => {
     ['Event: 2022-01-01', [new Date(2022, 0, 1)]],
     ['Deadline: 2025/12/31', [new Date(2025, 11, 31)]],
     ['No date here!', []],
+    ['Some special chars,!/ - but still no date ... / ///', []],
   ])('extracts dates from "%s"', (input, expected) => {
     const dates = extractDatesFromText(input)
     expect(dates).toEqual(expected)
