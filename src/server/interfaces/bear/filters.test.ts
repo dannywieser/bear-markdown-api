@@ -21,39 +21,46 @@ describe('extractDatesFromText', () => {
 describe('filterNotes', () => {
   const notes: MarkdownNote[] = [
     mockMarkdownNote({
-      created: new Date('2023-09-16T10:00:00Z'),
+      created: new Date(2023, 8, 16),
       id: '2023a',
-      modified: new Date('2023-09-17T10:00:00Z'),
+      modified: new Date(2023, 8, 17),
+      text: 'Meeting notes for project.',
     }),
     mockMarkdownNote({
-      created: new Date('2023-04-16T10:00:00Z'),
+      created: new Date(2023, 3, 16),
       id: '2023b',
-      modified: new Date('2023-04-17T10:00:00Z'),
+      modified: new Date(2023, 3, 17),
     }),
     mockMarkdownNote({
-      created: new Date('2022-01-01T00:00:00Z'),
+      created: new Date(2022, 0, 4),
       id: '2',
-      modified: new Date('2022-01-02T00:00:00Z'),
+      modified: new Date(2022, 0, 2),
+      text: 'Random text.',
     }),
     mockMarkdownNote({
-      created: new Date('2025-12-31T23:59:59Z'),
+      created: new Date(2025, 11, 31),
       id: '3',
-      modified: new Date('2026-01-01T00:00:00Z'),
+      modified: new Date(2026, 1, 1),
     }),
     mockMarkdownNote({
-      created: new Date('2020-05-05T00:00:00Z'),
+      created: new Date(2020, 4, 5),
       id: '4',
-      modified: new Date('2020-05-06T00:00:00Z'),
+      modified: new Date(2020, 4, 6),
+      text: '2025 is a big year.',
     }),
   ]
 
   test.each([
     ['year only', { y: 2023 }, ['2023a', '2023b']],
     ['year and month', { m: 4, y: 2023 }, ['2023b']],
+    ['month only', { m: 4, y: 2023 }, ['2023b']],
+    ['day only', { d: 4 }, ['2']],
+    ['text search matches note text', { text: 'meeting' }, ['2023a']],
+    ['text search matches no notes', { text: 'notfound' }, []],
+    ['date or text match (any filter)', { text: '2025', y: 2023 }, ['2023a', '2023b', '4']],
+    ['no filters returns all', {}, ['2023a', '2023b', '2', '3', '4']],
   ])('filters %s', (_desc, filters: FilterOptions, expected) => {
     const results = filterNotes(notes, filters)
-
-    expect(results.length).toEqual(expected.length)
-    results.map(({ id }, index) => expect(id).toEqual(expected[index]))
+    expect(results.map(({ id }) => id).sort()).toEqual(expected.sort())
   })
 })

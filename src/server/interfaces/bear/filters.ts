@@ -1,9 +1,18 @@
-import { FilterOptions, MarkdownNote } from '../../../types'
+import { FilterFunction, FilterOptions, MarkdownNote } from '../../../types'
 
-export const filterNotes = (allNotes: MarkdownNote[], filters: FilterOptions) =>
-  allNotes.filter(
-    (note) => matchByCreatedOrModified(note, filters) || matchByDateInText(note, filters)
-  )
+export const filterNotes = (allNotes: MarkdownNote[], filters: FilterOptions) => {
+  const { d, m, text, y } = filters
+  const dateFilters = y || m || d
+  const filterFunctions: FilterFunction[] = [
+    ...(dateFilters ? [matchByCreatedOrModified, matchByDateInText] : []),
+    ...(text ? [matchByTextInNote] : []),
+  ]
+  if (filterFunctions.length === 0) return allNotes
+  return allNotes.filter((note) => filterFunctions.some((fn) => fn(note, filters)))
+}
+
+const parseNoteText = (note: MarkdownNote) =>
+  typeof note.text === 'string' ? note.text.toLowerCase() : ''
 
 const matchPartialDate = (dates: Date[], { d, m, y }: FilterOptions) =>
   dates.some((date) => {
@@ -13,7 +22,6 @@ const matchPartialDate = (dates: Date[], { d, m, y }: FilterOptions) =>
     return true
   })
 
-// Extracts all dates in supported formats from a string
 export function extractDatesFromText(text: string): Date[] {
   // Regex for YYYY.MM.DD, YYYY-MM-DD, or YYYY/MM/DD
   const datePattern = /\b(\d{4})[.\-/](\d{2})[.\-/](\d{2})\b/g
@@ -31,8 +39,10 @@ export function matchByCreatedOrModified(note: MarkdownNote, filters: FilterOpti
   return matchPartialDate(dates, filters)
 }
 
-export function matchByDateInText(note: MarkdownNote, filters: FilterOptions) {
-  const text = typeof note.text === 'string' ? note.text : ''
-  const dates = extractDatesFromText(text)
-  return matchPartialDate(dates, filters)
-}
+export const matchByDateInText = (note: MarkdownNote, filters: FilterOptions) =>
+  matchPartialDate(extractDatesFromText(parseNoteText(note)), filters)
+
+export const matchByTextInNote = (
+  note: MarkdownNote,
+  { text: searchText = '' }: FilterOptions
+): boolean => parseNoteText(note).includes(searchText)
