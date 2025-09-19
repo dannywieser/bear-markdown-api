@@ -12,7 +12,7 @@
     "url": "https://github.com/dannywieser/bear-markdown-api/issues"
   },
   "bin": {
-    "bear-api": "./dist/server/server.js"
+    "bear-markdown-api": "./dist/server/server.js"
   },
   "repository": {
     "type": "git",

@@ -13,5 +13,6 @@
     "dbFile": "database.sqlite",
     "imageRoot": "Local Files/Note Images/",
     "fileRoot": "Local Files/Note Files/"
-  }
+  },
+  "startupMessage": "🤖🐻 Bear Markdown API 🐻🤖"
 }

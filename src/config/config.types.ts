@@ -16,4 +16,7 @@ export interface Config {
   noteWebPath: string
   port: number
   rootDir: string
+  startupMessage: string
+  webAssets?: string
+  webIndex?: string
 }

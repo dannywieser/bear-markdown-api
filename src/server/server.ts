@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import express from 'express'
+import path from 'path'
 
 import { Config, loadConfig } from '../config'
 import { activity, expandPath, header1 } from '../util'
@@ -14,13 +15,16 @@ export const startMessage = ({ host, port, rootDir }: Config, imageRoot: string)
 }
 
 export const startup = async () => {
-  header1('🤖🐻 Bear Markdown API 🐻🤖')
   const config = await loadConfig()
   const {
     bearConfig: { appDataRoot, fileRoot, imageRoot },
     fileUriRoot,
     imageUriRoot,
+    startupMessage,
+    webAssets,
+    webIndex,
   } = config
+  header1(startupMessage)
 
   // image server
   const imageFsRoot = `${expandPath(appDataRoot)}/${imageRoot}`
@@ -29,6 +33,16 @@ export const startup = async () => {
   // file server
   const fileFsRoot = `${expandPath(appDataRoot)}/${fileRoot}`
   app.use(fileUriRoot, express.static(fileFsRoot))
+
+  if (webAssets) {
+    app.use(express.static(path.join(__dirname, webAssets)))
+  }
+
+  // Single Page App
+  if (webIndex) {
+    const webPath = path.join(__dirname, webIndex)
+    app.get('/{*splat}', async (_req, res) => res.sendFile(webPath))
+  }
 
   const { host, port } = config
 
