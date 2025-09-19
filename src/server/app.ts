@@ -8,6 +8,7 @@ import { loadInterface } from './interfaces/load'
 const appMode = 'bear'
 
 export const app = express()
+
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 
 app.get('/api/notes', async (req, res, next) => {

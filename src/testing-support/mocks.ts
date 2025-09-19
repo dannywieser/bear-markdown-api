@@ -34,6 +34,7 @@ export const mockConfig = (overrides?: Partial<Config>): Config => ({
   noteWebPath: '/path/to/web',
   port: 80,
   rootDir: '~/.root-dir',
+  startupMessage: 'testing',
   ...overrides,
 })
 
