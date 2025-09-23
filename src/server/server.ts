@@ -34,14 +34,12 @@ export const startup = async (overrides?: Partial<Config>) => {
 
   if (webAssets) {
     activity(`serving web assets from: ${webAssets}`)
-    app.use(express.static(path.join(__dirname, webAssets)))
+    app.use(express.static(webAssets))
   }
 
-  // Single Page App
   if (webIndex) {
-    const webPath = path.join(__dirname, webIndex)
     activity(`serving web from: ${webIndex}`)
-    app.get('/{*splat}', async (_req, res) => res.sendFile(webPath))
+    app.get('/{*splat}', async (_req, res) => res.sendFile(webIndex))
   }
 
   const { host, port } = config
