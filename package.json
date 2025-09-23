@@ -43,7 +43,7 @@
     "@types/morgan": "1.9.10",
     "@types/node": "24.4.0",
     "@types/supertest": "6.0.3",
-    "eslint": "9.35.0",
+    "eslint": "9.36.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-perfectionist": "4.15.0",
     "eslint-plugin-prettier": "5.5.4",
