@@ -1,5 +1,4 @@
 import express from 'express'
-import path from 'path'
 
 import { Config, loadConfig } from '../config'
 import { activity, expandPath, header1 } from '../util'
