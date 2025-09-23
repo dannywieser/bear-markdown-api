@@ -22,6 +22,14 @@ describe('loadConfig', () => {
     expect(config.bearConfig).toBeDefined()
   })
 
+  test('allows overrides to be passed in', async () => {
+    asMock(fileExists).mockReturnValue(false)
+
+    const config = await loadConfig({ startupMessage: 'hello world' })
+
+    expect(config.startupMessage).toBe('hello world')
+  })
+
   test('loads config if present', async () => {
     asMock(fileExists).mockReturnValue(true)
     const fakeConfig = mockConfig()
