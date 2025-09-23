@@ -7,6 +7,7 @@ module.exports = {
     '!src/**/*.test.ts',
     '!src/**/*.test.tsx',
     '!src/**/index.ts',
+    '!src/server/startup.ts',
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',

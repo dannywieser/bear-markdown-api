@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import express from 'express'
 import path from 'path'
 
@@ -14,8 +12,8 @@ export const startMessage = ({ host, port, rootDir }: Config, imageRoot: string)
   activity(`image directory: ${imageRoot}`)
 }
 
-export const startup = async () => {
-  const config = await loadConfig()
+export const startup = async (overrides?: Partial<Config>) => {
+  const config = await loadConfig(overrides)
   const {
     bearConfig: { appDataRoot, fileRoot, imageRoot },
     fileUriRoot,
@@ -35,12 +33,14 @@ export const startup = async () => {
   app.use(fileUriRoot, express.static(fileFsRoot))
 
   if (webAssets) {
+    activity(`serving web assets from: ${webAssets}`)
     app.use(express.static(path.join(__dirname, webAssets)))
   }
 
   // Single Page App
   if (webIndex) {
     const webPath = path.join(__dirname, webIndex)
+    activity(`serving web from: ${webIndex}`)
     app.get('/{*splat}', async (_req, res) => res.sendFile(webPath))
   }
 
@@ -52,5 +52,3 @@ export const startup = async () => {
     process.exit(1)
   })
 }
-
-startup()

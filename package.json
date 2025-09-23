@@ -12,7 +12,7 @@
     "url": "https://github.com/dannywieser/bear-markdown-api/issues"
   },
   "bin": {
-    "bear-markdown-api": "./dist/server/server.js"
+    "bear-markdown-api": "./dist/server/startup.js"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,20 @@
   },
   "license": "MIT",
   "author": "Danny Wieser",
-  "main": "dist/server.js",
+  "main": "dist/index.js",
+  "types": "dist/types.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./server": {
+      "types": "./dist/server/server.d.ts",
+      "import": "./dist/server/server.js",
+      "require": "./dist/server/server.js"
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -30,8 +43,8 @@
   "scripts": {
     "build": "tsc",
     "ci": "npm run lint && npm run test && npm run build",
-    "start": "node ./dist/server/server.js",
-    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' ./src/server/server.ts",
+    "start": "node ./dist/server/startup.js",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' ./src/server/startup.ts",
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
     "test": "jest --coverage"
