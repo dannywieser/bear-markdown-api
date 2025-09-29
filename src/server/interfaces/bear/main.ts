@@ -9,7 +9,13 @@ import { mapNotes } from './noteMapper'
 export const allNotes = async (
   filters: FilterOptions,
   { allNotes = [] }: MarkdownInit
-): Promise<MarkdownNote[]> => filterNotes(allNotes, filters)
+): Promise<MarkdownNote[]> => {
+  const filtered = filterNotes(allNotes, filters)
+  return filtered.map((note) => ({
+    ...note,
+    tokens: lexer(note, allNotes),
+  }))
+}
 
 export async function init(config: Config): Promise<MarkdownInit> {
   const backupFile = backupBearDatabase(config)

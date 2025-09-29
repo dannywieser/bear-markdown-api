@@ -60,12 +60,15 @@ describe('bear interface functions', () => {
     expect(result).toBeNull()
   })
 
-  test('allNotes returns the all notes array directly', async () => {
+  test('allNotes returns the filtered notes with tokens added', async () => {
     const notes = [mockMarkdownNote({ id: 'abc' }), mockMarkdownNote({ id: 'efg' })]
     const config = mockConfig()
 
     const result = await allNotes({}, { allNotes: notes, config, db })
 
-    expect(result).toEqual(notes)
+    expect(result[0]?.id).toEqual(notes[0]?.id)
+    expect(result[0]?.tokens).toEqual(['token'])
+    expect(result[1]?.id).toEqual(notes[1]?.id)
+    expect(result[1]?.tokens).toEqual(['token'])
   })
 })
