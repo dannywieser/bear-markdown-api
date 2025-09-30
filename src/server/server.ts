@@ -26,13 +26,12 @@ export const startup = async (overrides?: Partial<Config>) => {
   app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 
   app.use(createNotesRoutes(mode, init))
+  app.use(createStaticRoutes(config))
 
   app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     console.error(err)
     res.status(500).json({ error: 'Internal Server Error' })
   })
-
-  app.use(createStaticRoutes(config))
 
   const server = app.listen(port, host, () => startMessage(config))
   server.on('error', (err) => {
