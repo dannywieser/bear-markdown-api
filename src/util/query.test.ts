@@ -1,6 +1,6 @@
 import { Request } from 'express'
 
-import { parseQuery } from './app.util'
+import { parseQuery } from './query'
 
 describe('parseQuery', () => {
   test.each([
