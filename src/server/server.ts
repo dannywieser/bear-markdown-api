@@ -1,49 +1,39 @@
-import express from 'express'
+import express, { NextFunction, Request, Response } from 'express'
+import morgan from 'morgan'
 
 import { Config, loadConfig } from '../config'
-import { activity, expandPath, header1 } from '../util'
-import { app } from './app'
+import { activity, header1 } from '../util'
+import { loadInterface } from './interfaces/load'
+import { createNotesRoutes } from './routes/notesRoutes'
+import { createStaticRoutes } from './routes/staticRoutes'
 
-export const startMessage = ({ host, port, rootDir }: Config, imageRoot: string) => {
+export const startMessage = ({ host, port, rootDir }: Config) => {
   activity(`server running: http://${host}:${port}`)
   activity(`root directory: ${rootDir}`)
   activity(`config file: ${rootDir}/config.json`)
-  activity(`image directory: ${imageRoot}`)
 }
 
 export const startup = async (overrides?: Partial<Config>) => {
   const config = await loadConfig(overrides)
-  const {
-    bearConfig: { appDataRoot, fileRoot, imageRoot },
-    fileUriRoot,
-    imageUriRoot,
-    startupMessage,
-    webAssets,
-    webIndex,
-  } = config
+  const { startupMessage } = config
+  const { host, port } = config
   header1(startupMessage)
 
-  // image server
-  const imageFsRoot = `${expandPath(appDataRoot)}/${imageRoot}`
-  app.use(imageUriRoot, express.static(imageFsRoot))
+  const app = express()
+  const mode = loadInterface('bear')
+  const init = await mode.init(config)
 
-  // file server
-  const fileFsRoot = `${expandPath(appDataRoot)}/${fileRoot}`
-  app.use(fileUriRoot, express.static(fileFsRoot))
+  app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 
-  if (webAssets) {
-    activity(`serving web assets from: ${webAssets}`)
-    app.use(express.static(webAssets))
-  }
+  app.use(createNotesRoutes(mode, init))
+  app.use(createStaticRoutes(config))
 
-  if (webIndex) {
-    activity(`serving web from: ${webIndex}`)
-    app.get('/{*splat}', async (_req, res) => res.sendFile(webIndex))
-  }
+  app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+    console.error(err)
+    res.status(500).json({ error: 'Internal Server Error' })
+  })
 
-  const { host, port } = config
-
-  const server = app.listen(port, host, () => startMessage(config, imageFsRoot))
+  const server = app.listen(port, host, () => startMessage(config))
   server.on('error', (err) => {
     console.error('server error:', err)
     process.exit(1)
