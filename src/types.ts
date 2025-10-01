@@ -35,6 +35,14 @@ export interface MarkdownNoteFile {
 
 export type MarkdownNoteSource = 'bear'
 
+export interface MarkdownNoteSummary {
+  created: Date
+  id: string
+  modified: Date
+  self: string
+  title: string
+}
+
 export interface MarkdownTag {
   icon: string
   id: number
