@@ -4,10 +4,9 @@ import morgan from 'morgan'
 import { Config, loadConfig } from '../config'
 import { activity, header1 } from '../util'
 import { loadInterface } from './interfaces/load'
-import { createNotesRoutes } from './routes/notesRoutes'
-import { createStaticRoutes } from './routes/staticRoutes'
+import { createNotesRoutes, createStaticRoutes } from './routes'
 
-export const startMessage = ({ host, port, rootDir }: Config) => {
+const startMessage = ({ host, port, rootDir }: Config) => {
   activity(`server running: http://${host}:${port}`)
   activity(`root directory: ${rootDir}`)
   activity(`config file: ${rootDir}/config.json`)
@@ -21,11 +20,10 @@ export const startup = async (overrides?: Partial<Config>) => {
 
   const app = express()
   const mode = loadInterface('bear')
-  const init = await mode.init(config)
 
   app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 
-  app.use(createNotesRoutes(mode, init))
+  app.use(createNotesRoutes(mode, config))
   app.use(createStaticRoutes(config))
 
   app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {

@@ -1,56 +1,59 @@
-import express from 'express'
-import request from 'supertest'
+import express, { Express } from 'express'
 
-import { asMock, mockMarkdownNote } from '../testing-support'
-import { expandPath } from '../util'
-import { MarkdownInit, MarkdownInterfaceMode } from './interfaces/interfaces.types'
-import { createNotesRoutes } from './routes/notesRoutes'
+import { loadConfig } from '../config'
+import { asMock, mockConfig } from '../testing-support'
+import { MarkdownInterfaceMode } from './interfaces/interfaces.types'
+import { loadInterface } from './interfaces/load'
+import { createNotesRoutes, createStaticRoutes } from './routes'
+import { startup } from './server'
 
+jest.mock('./routes')
+jest.mock('../config')
 jest.mock('../util')
+jest.mock('./interfaces/load')
+jest.mock('express')
+jest.mock('marked', () => ({
+  marked: {
+    lexer: jest.fn(() => ['token1', 'token2']),
+    use: jest.fn(),
+  },
+}))
 
-const mockNote = mockMarkdownNote({ id: 'abc' })
-const mockAllNotes = jest.fn().mockResolvedValue([mockNote])
-const mockNoteById = jest.fn().mockResolvedValue(mockNote)
-const mockMode = {
-  allNotes: mockAllNotes,
-  noteById: mockNoteById,
-} as unknown as MarkdownInterfaceMode
-const mockInit = {} as unknown as MarkdownInit
+const setupMocks = () => {
+  const interfaceMode = {} as unknown as MarkdownInterfaceMode
+  asMock(loadInterface).mockReturnValue(interfaceMode)
 
-describe('main server', () => {
-  let app: express.Express
+  const listener = { on: jest.fn() }
+  const listen = jest.fn().mockReturnValue(listener)
+  const expressMock = {
+    listen,
+    use: jest.fn(),
+  }
+  asMock(express).mockReturnValue(expressMock as unknown as Express)
+  return { expressMock, interfaceMode }
+}
+
+const config = mockConfig()
+
+describe('server startup', () => {
   beforeEach(() => {
-    asMock(expandPath).mockImplementation((path: string) => `expanded/${path}`)
-    app = express()
-    app.use(createNotesRoutes(mockMode, mockInit))
+    asMock(loadConfig).mockResolvedValue(config)
   })
 
-  test('GET /api/notes returns notes', async () => {
-    const res = await request(app).get('/api/notes')
-    expect(res.status).toBe(200)
-    expect(res.body).toEqual([
-      {
-        ...mockNote,
-        created: mockNote.created.toISOString(),
-        modified: mockNote.modified.toISOString(),
-      },
-    ])
+  test('correctly registers routes', async () => {
+    const { expressMock, interfaceMode } = setupMocks()
+
+    await startup()
+
+    expect(expressMock.use).toHaveBeenCalledTimes(4)
+    expect(createNotesRoutes).toHaveBeenCalledWith(interfaceMode, config)
+    expect(createStaticRoutes).toHaveBeenCalledWith(config)
   })
 
-  test('GET /api/notes/:noteId returns a note', async () => {
-    const res = await request(app).get('/api/notes/1')
-    expect(res.status).toBe(200)
-    expect(res.body).toEqual({
-      ...mockNote,
-      created: mockNote.created.toISOString(),
-      modified: mockNote.modified.toISOString(),
-    })
-  })
+  test('server listener startup', async () => {
+    const { expressMock } = setupMocks()
 
-  test('GET /api/notes/:noteId returns 404 if not found', async () => {
-    mockNoteById.mockResolvedValueOnce(undefined)
-    const res = await request(app).get('/api/notes/doesnotexist')
-    expect(res.status).toBe(404)
-    expect(res.body).toEqual({ error: "note with ID 'doesnotexist' not found" })
+    await startup()
+    expect(expressMock.listen).toHaveBeenCalledWith(80, 'localhost', expect.any(Function))
   })
 })
