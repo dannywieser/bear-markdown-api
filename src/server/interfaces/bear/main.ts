@@ -43,6 +43,9 @@ export async function noteById(
 
 export async function randomNote(config: Config): Promise<MarkdownNote | undefined> {
   const notes = await allNotes({}, config)
+  if (notes.length === 0) {
+    return undefined
+  }
   const randomIndex = Math.floor(Math.random() * notes.length)
   const note = notes[randomIndex]
   return tokenizeNote(note, notes)
