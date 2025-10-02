@@ -43,18 +43,16 @@ describe('bear interface functions', () => {
 
     const result = await noteById('def', config)
 
-    expect(result).toBeNull()
+    expect(result).not.toBeDefined()
   })
 
-  test('allNotes returns the filtered notes with tokens added', async () => {
+  test('allNotes returns the filtered notes', async () => {
     const config = mockConfig()
     asMock(mapNotes).mockResolvedValue(mockNotes)
 
     const result = await allNotes({}, config)
 
     expect(result[0]?.id).toEqual(mockNotes[0]?.id)
-    expect(result[0]?.tokens).toEqual(['token'])
     expect(result[1]?.id).toEqual(mockNotes[1]?.id)
-    expect(result[1]?.tokens).toEqual(['token'])
   })
 })

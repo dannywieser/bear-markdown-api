@@ -17,6 +17,18 @@ export function createNotesRoutes(mode: MarkdownInterfaceMode, config: Config) {
     }
   })
 
+  router.get('/api/notes/random', async (_req, res, next) => {
+    try {
+      const result = await mode.randomNote(config)
+      if (!result) {
+        return res.status(404).json({ error: `could not retrieve random note` })
+      }
+      res.json(result)
+    } catch (err) {
+      next(err)
+    }
+  })
+
   router.get('/api/notes/:noteId', async (req, res, next) => {
     try {
       const result = await mode.noteById(req.params.noteId, config)
