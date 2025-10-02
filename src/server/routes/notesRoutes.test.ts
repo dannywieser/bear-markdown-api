@@ -11,9 +11,11 @@ jest.mock('../../util')
 const mockNote = mockMarkdownNote({ id: 'abc' })
 const mockAllNotes = jest.fn().mockResolvedValue([mockNote])
 const mockNoteById = jest.fn().mockResolvedValue(mockNote)
+const mockRandomNote = jest.fn().mockResolvedValue(mockNote)
 const mockMode = {
   allNotes: mockAllNotes,
   noteById: mockNoteById,
+  randomNote: mockRandomNote,
 } as unknown as MarkdownInterfaceMode
 const config = mockConfig()
 
@@ -35,6 +37,17 @@ describe('notes routes', () => {
         modified: mockNote.modified.toISOString(),
       },
     ])
+  })
+
+  test('GET /api/notes/random returns a random note', async () => {
+    const res = await request(app).get('/api/notes/random')
+
+    expect(res.status).toBe(200)
+    expect(res.body).toEqual({
+      ...mockNote,
+      created: mockNote.created.toISOString(),
+      modified: mockNote.modified.toISOString(),
+    })
   })
 
   test('GET /api/notes/:noteId returns a note', async () => {

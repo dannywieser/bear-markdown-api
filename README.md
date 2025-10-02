@@ -188,6 +188,12 @@ The text for the note is returned as plain text, and also as a set of tokens par
 }
 ```
 
+### `GET /api/notes/random`
+
+Retrieve a single random note.
+
+The text for the note is returned as plain text, and also as a set of tokens parsed via [Marked](https://marked.js.org/).
+
 ## Issues? Ideas for Improvement?
 
 I'd love to hear your feedback and ideas for features - feel free to [open an issue.](https://github.com/dannywieser/bear-markdown-api/issues)
