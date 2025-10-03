@@ -6,7 +6,7 @@ import { lexer } from '../../marked/main'
 import { FilterOptions, MarkdownNote } from '../../types'
 import { expandPath } from '../../util'
 import { filterNotes } from './filters'
-import { mapNotes } from './noteMapper'
+import { mapNotes } from './note'
 
 export async function openDatabase(config: Config): Promise<Database> {
   const {
@@ -17,6 +17,9 @@ export async function openDatabase(config: Config): Promise<Database> {
   return open({ driver, filename, mode: sqlite3.OPEN_READONLY })
 }
 
+const sortByCreateDate = (a: MarkdownNote, b: MarkdownNote) =>
+  new Date(a.created).getTime() - new Date(b.created).getTime()
+
 const tokenizeNote = (note: MarkdownNote | undefined, notes: MarkdownNote[]) =>
   note
     ? {
@@ -24,9 +27,6 @@ const tokenizeNote = (note: MarkdownNote | undefined, notes: MarkdownNote[]) =>
         tokens: lexer(note, notes),
       }
     : undefined
-
-const sortByCreateDate = (a: MarkdownNote, b: MarkdownNote) =>
-  new Date(a.created).getTime() - new Date(b.created).getTime()
 
 export const allNotes = async (
   filters: FilterOptions,
