@@ -5,7 +5,6 @@
   "imageUriRoot": "/images",
   "fileUriRoot": "/files",
   "noteWebPath": "/note",
-  "backups": 5,
   "rootDir": "~/.bear-markdown-api",
   "bearConfig": {
     "openInBearUrl": "bear://x-callback-url/open-note?id=",
