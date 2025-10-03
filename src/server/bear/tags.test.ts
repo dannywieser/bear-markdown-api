@@ -14,6 +14,10 @@ const allTags = [
 
 const note = mockBearNote({ Z_PK: 1, ZUNIQUEIDENTIFIER: 'note-1' })
 
+beforeAll(() => {
+  jest.spyOn(console, 'error').mockImplementation(() => {})
+})
+
 describe('getTagsForNote', () => {
   test('returns tag titles for valid tag ids', async () => {
     asMock(mockDb.all).mockResolvedValueOnce([
