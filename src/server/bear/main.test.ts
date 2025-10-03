@@ -3,7 +3,7 @@ import { Database } from 'sqlite'
 
 import { lexer } from '../../marked/main'
 import { asMock, mockConfig, mockMarkdownNote } from '../../testing-support'
-import { allNotes, noteById } from './main'
+import { allNotes, noteById, randomNote } from './main'
 import { mapNotes } from './note'
 
 jest.mock('marked', () => ({
@@ -61,5 +61,17 @@ describe('bear functions', () => {
 
     expect(result[0]?.id).toEqual(mockNotes[0]?.id)
     expect(result[1]?.id).toEqual(mockNotes[1]?.id)
+  })
+
+  test('randomNote returns a randomized note', async () => {
+    const tokens = ['token'] as unknown as TokensList
+    asMock(lexer).mockReturnValue(tokens)
+    asMock(mapNotes).mockResolvedValue(mockNotes)
+    const config = mockConfig()
+
+    const result = await randomNote(config, mockDb)
+
+    expect(result).not.toBeNull()
+    expect(mockNotes.some(({ id }) => id === result?.id))
   })
 })
