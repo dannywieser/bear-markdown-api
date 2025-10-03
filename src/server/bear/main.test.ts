@@ -72,6 +72,6 @@ describe('bear functions', () => {
     const result = await randomNote(config, mockDb)
 
     expect(result).not.toBeNull()
-    expect(mockNotes.some(({ id }) => id === result?.id))
+    expect(mockNotes.some(({ id }) => id === result?.id)).toBeTruthy()
   })
 })
