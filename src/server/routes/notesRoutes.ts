@@ -31,10 +31,13 @@ export function createNotesRoutes(config: Config, db: Database) {
   })
 
   router.get('/api/notes/:noteId', async (req, res, next) => {
+    const {
+      params: { noteId },
+    } = req
     try {
-      const result = await noteById(req.params.noteId, config, db)
+      const result = await noteById(noteId, config, db)
       if (!result) {
-        return res.status(404).json({ error: `note with ID '${req.params.noteId}' not found` })
+        return res.status(404).json({ error: `note with ID '${noteId}' not found` })
       }
       res.json(result)
     } catch (err) {

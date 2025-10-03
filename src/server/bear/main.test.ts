@@ -1,11 +1,10 @@
 import { TokensList } from 'marked'
 import { Database } from 'sqlite'
 
-import { lexer } from '../../../marked/main'
-import { asMock, mockConfig, mockMarkdownNote } from '../../../testing-support'
-import { backupBearDatabase } from './database'
+import { lexer } from '../../marked/main'
+import { asMock, mockConfig, mockMarkdownNote } from '../../testing-support'
 import { allNotes, noteById } from './main'
-import { mapNotes } from './noteMapper'
+import { mapNotes } from './note'
 
 jest.mock('marked', () => ({
   marked: {
@@ -13,16 +12,12 @@ jest.mock('marked', () => ({
     use: jest.fn(),
   },
 }))
-jest.mock('./database')
-jest.mock('./noteMapper')
-jest.mock('../../../marked/main')
+jest.mock('./note')
+jest.mock('../../marked/main')
 const mockNotes = [mockMarkdownNote({ id: 'abc' }), mockMarkdownNote({ id: 'efg' })]
 
 const mockDb = {} as unknown as Database
-describe('bear interface functions', () => {
-  beforeEach(() => {
-    asMock(backupBearDatabase).mockReturnValue('backupdb.sqlite')
-  })
+describe('bear functions', () => {
   test('noteById returns note with tokens when found', async () => {
     const tokens = ['token'] as unknown as TokensList
     asMock(lexer).mockReturnValue(tokens)
@@ -46,6 +41,16 @@ describe('bear interface functions', () => {
     const result = await noteById('def', config, mockDb)
 
     expect(result).not.toBeDefined()
+  })
+
+  test('allNotes returns all notes without filtering', async () => {
+    const config = mockConfig()
+    asMock(mapNotes).mockResolvedValue(mockNotes)
+
+    const result = await allNotes({}, config, mockDb)
+
+    expect(result[0]?.id).toEqual(mockNotes[0]?.id)
+    expect(result[1]?.id).toEqual(mockNotes[1]?.id)
   })
 
   test('allNotes returns the filtered notes', async () => {
