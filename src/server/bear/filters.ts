@@ -1,4 +1,4 @@
-import { FilterFunction, FilterOptions, MarkdownNote } from '../../../types'
+import { FilterFunction, FilterOptions, MarkdownNote } from '../../types'
 
 export const filterNotes = (allNotes: MarkdownNote[], filters: FilterOptions) => {
   const { d, m, tag, text, y } = filters

@@ -1,4 +1,5 @@
 import { TokensList } from 'marked'
+import { Database } from 'sqlite'
 
 import { lexer } from '../../../marked/main'
 import { asMock, mockConfig, mockMarkdownNote } from '../../../testing-support'
@@ -17,6 +18,7 @@ jest.mock('./noteMapper')
 jest.mock('../../../marked/main')
 const mockNotes = [mockMarkdownNote({ id: 'abc' }), mockMarkdownNote({ id: 'efg' })]
 
+const mockDb = {} as unknown as Database
 describe('bear interface functions', () => {
   beforeEach(() => {
     asMock(backupBearDatabase).mockReturnValue('backupdb.sqlite')
@@ -27,7 +29,7 @@ describe('bear interface functions', () => {
     asMock(mapNotes).mockResolvedValue(mockNotes)
     const config = mockConfig()
 
-    const result = await noteById('abc', config)
+    const result = await noteById('abc', config, mockDb)
 
     expect(result).toEqual({
       ...mockNotes[0],
@@ -41,7 +43,7 @@ describe('bear interface functions', () => {
     const config = mockConfig()
     asMock(mapNotes).mockResolvedValue([])
 
-    const result = await noteById('def', config)
+    const result = await noteById('def', config, mockDb)
 
     expect(result).not.toBeDefined()
   })
@@ -50,7 +52,7 @@ describe('bear interface functions', () => {
     const config = mockConfig()
     asMock(mapNotes).mockResolvedValue(mockNotes)
 
-    const result = await allNotes({}, config)
+    const result = await allNotes({}, config, mockDb)
 
     expect(result[0]?.id).toEqual(mockNotes[0]?.id)
     expect(result[1]?.id).toEqual(mockNotes[1]?.id)

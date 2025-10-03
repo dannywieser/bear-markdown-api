@@ -1,8 +1,8 @@
 import { Database } from 'sqlite'
 
-import { Config } from '../../../config'
-import { MarkdownNote, MarkdownTag } from '../../../types'
-import { convertDate } from '../../../util'
+import { Config } from '../../config'
+import { MarkdownNote, MarkdownTag } from '../../types'
+import { convertDate } from '../../util'
 import { BearFile, BearNote, BearTag, BearTagRel } from './bear.types'
 
 const BEAR_TYPE_IMAGE = 9

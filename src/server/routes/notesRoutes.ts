@@ -1,16 +1,17 @@
 import { Router } from 'express'
+import { Database } from 'sqlite'
 
 import { Config } from '../../config'
 import { parseQuery } from '../../util'
-import { MarkdownInterfaceMode } from '../interfaces/interfaces.types'
+import { allNotes, noteById, randomNote } from '../bear'
 
-export function createNotesRoutes(mode: MarkdownInterfaceMode, config: Config) {
+export function createNotesRoutes(config: Config, db: Database) {
   const router = Router()
 
   router.get('/api/notes', async (req, res, next) => {
     try {
       const filter = parseQuery(req)
-      const result = await mode.allNotes(filter, config)
+      const result = await allNotes(filter, config, db)
       res.json(result)
     } catch (err) {
       next(err)
@@ -19,7 +20,7 @@ export function createNotesRoutes(mode: MarkdownInterfaceMode, config: Config) {
 
   router.get('/api/notes/random', async (_req, res, next) => {
     try {
-      const result = await mode.randomNote(config)
+      const result = await randomNote(config, db)
       if (!result) {
         return res.status(404).json({ error: `could not retrieve random note` })
       }
@@ -31,7 +32,7 @@ export function createNotesRoutes(mode: MarkdownInterfaceMode, config: Config) {
 
   router.get('/api/notes/:noteId', async (req, res, next) => {
     try {
-      const result = await mode.noteById(req.params.noteId, config)
+      const result = await noteById(req.params.noteId, config, db)
       if (!result) {
         return res.status(404).json({ error: `note with ID '${req.params.noteId}' not found` })
       }

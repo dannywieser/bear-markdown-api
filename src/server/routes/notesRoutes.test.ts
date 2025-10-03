@@ -1,30 +1,25 @@
 import express from 'express'
+import { Database } from 'sqlite'
 import request from 'supertest'
 
 import { asMock, mockConfig, mockMarkdownNote } from '../../testing-support'
 import { expandPath } from '../../util'
-import { MarkdownInterfaceMode } from '../interfaces/interfaces.types'
 import { createNotesRoutes } from './notesRoutes'
 
 jest.mock('../../util')
+jest.mock('../bear')
 
 const mockNote = mockMarkdownNote({ id: 'abc' })
-const mockAllNotes = jest.fn().mockResolvedValue([mockNote])
-const mockNoteById = jest.fn().mockResolvedValue(mockNote)
-const mockRandomNote = jest.fn().mockResolvedValue(mockNote)
-const mockMode = {
-  allNotes: mockAllNotes,
-  noteById: mockNoteById,
-  randomNote: mockRandomNote,
-} as unknown as MarkdownInterfaceMode
 const config = mockConfig()
+
+const mockDb = {} as unknown as Database
 
 describe('notes routes', () => {
   let app: express.Express
   beforeEach(() => {
     asMock(expandPath).mockImplementation((path: string) => `expanded/${path}`)
     app = express()
-    app.use(createNotesRoutes(mockMode, config))
+    app.use(createNotesRoutes(config, mockDb))
   })
 
   test('GET /api/notes returns notes', async () => {

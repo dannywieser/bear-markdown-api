@@ -3,7 +3,7 @@ import morgan from 'morgan'
 
 import { Config, loadConfig } from '../config'
 import { activity, header1 } from '../util'
-import { loadInterface } from './interfaces/load'
+import { openDatabase } from './bear'
 import { createNotesRoutes, createStaticRoutes } from './routes'
 
 const startMessage = ({ host, port, rootDir }: Config) => {
@@ -19,11 +19,11 @@ export const startup = async (overrides?: Partial<Config>) => {
   header1(startupMessage)
 
   const app = express()
-  const mode = loadInterface('bear')
+  const db = await openDatabase(config)
 
   app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 
-  app.use(createNotesRoutes(mode, config))
+  app.use(createNotesRoutes(config, db))
   app.use(createStaticRoutes(config))
 
   app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
