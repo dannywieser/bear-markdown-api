@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 import { Config } from '../config'
-import { BearNote } from '../server/interfaces/bear/bear.types'
+import { BearNote } from '../server/bear/bear.types'
 import { MarkdownNote } from '../types'
 
 /**
@@ -20,7 +20,6 @@ export const asMock = <T extends (...args: any[]) => any>(mockTarget: T): jest.M
 
 export const mockConfig = (overrides?: Partial<Config>): Config => ({
   apiUriRoot: '/api',
-  backups: 2,
   bearConfig: {
     appDataRoot: '/path/to/bear',
     dbFile: 'dbfile.sqlite',
@@ -57,7 +56,6 @@ export const mockMarkdownNote = (overrides?: Partial<MarkdownNote>): MarkdownNot
   modified: new Date(),
   primaryKey: 1,
   self: '/path/to/self',
-  source: 'bear',
   tags: [],
   text: 'note text',
   title: 'note title',

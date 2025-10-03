@@ -1,5 +1,5 @@
-import { mockMarkdownNote } from '../../../testing-support'
-import { FilterOptions, MarkdownNote } from '../../../types'
+import { mockMarkdownNote } from '../../testing-support'
+import { FilterOptions, MarkdownNote } from '../../types'
 import { extractDatesFromText, filterNotes } from './filters'
 
 describe('extractDatesFromText', () => {

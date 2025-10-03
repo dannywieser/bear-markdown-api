@@ -8,7 +8,6 @@ export interface BearConfig {
 
 export interface Config {
   apiUriRoot: string
-  backups: number
   bearConfig: BearConfig
   fileUriRoot: string
   host: string

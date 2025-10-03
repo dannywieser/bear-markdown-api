@@ -14,8 +14,6 @@ This app adds an API for interacting with your notes, opening up endless possibi
 
 This application runs locally so your data never leaves your computer. As noted in the[ Bear documentation](https://bear.app/faq/where-are-bears-notes-located/), read only access to the Bear Database is considered safe.
 
-This application will make a backup of your Bear Database before any interactions - and will only ever interact with the backup copy of the database.
-
 ## Installation
 
 `bear-markdown-api` is installed via [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).

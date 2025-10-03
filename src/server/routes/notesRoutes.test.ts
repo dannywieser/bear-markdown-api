@@ -1,68 +1,84 @@
 import express from 'express'
+import { Database } from 'sqlite'
 import request from 'supertest'
 
 import { asMock, mockConfig, mockMarkdownNote } from '../../testing-support'
-import { expandPath } from '../../util'
-import { MarkdownInterfaceMode } from '../interfaces/interfaces.types'
+import { allNotes, noteById, randomNote } from '../bear'
 import { createNotesRoutes } from './notesRoutes'
 
+jest.mock('marked', () => ({
+  marked: {
+    lexer: jest.fn(() => ['token1', 'token2']),
+    use: jest.fn(),
+  },
+}))
 jest.mock('../../util')
+jest.mock('../bear')
 
-const mockNote = mockMarkdownNote({ id: 'abc' })
-const mockAllNotes = jest.fn().mockResolvedValue([mockNote])
-const mockNoteById = jest.fn().mockResolvedValue(mockNote)
-const mockRandomNote = jest.fn().mockResolvedValue(mockNote)
-const mockMode = {
-  allNotes: mockAllNotes,
-  noteById: mockNoteById,
-  randomNote: mockRandomNote,
-} as unknown as MarkdownInterfaceMode
 const config = mockConfig()
+
+const mockDb = {} as unknown as Database
+const note1 = mockMarkdownNote({ id: 'abc' })
+const note2 = mockMarkdownNote({ id: 'def' })
 
 describe('notes routes', () => {
   let app: express.Express
   beforeEach(() => {
-    asMock(expandPath).mockImplementation((path: string) => `expanded/${path}`)
+    asMock(allNotes).mockResolvedValue([note1, note2])
     app = express()
-    app.use(createNotesRoutes(mockMode, config))
+    app.use(createNotesRoutes(config, mockDb))
   })
 
-  test('GET /api/notes returns notes', async () => {
+  test('GET /api/notes returns all notes', async () => {
     const res = await request(app).get('/api/notes')
     expect(res.status).toBe(200)
     expect(res.body).toEqual([
       {
-        ...mockNote,
-        created: mockNote.created.toISOString(),
-        modified: mockNote.modified.toISOString(),
+        ...note1,
+        created: note1.created.toISOString(),
+        modified: note1.modified.toISOString(),
+      },
+      {
+        ...note2,
+        created: note2.created.toISOString(),
+        modified: note2.modified.toISOString(),
       },
     ])
   })
 
   test('GET /api/notes/random returns a random note', async () => {
+    asMock(randomNote).mockResolvedValue(note1)
+
     const res = await request(app).get('/api/notes/random')
 
     expect(res.status).toBe(200)
+    expect(randomNote).toHaveBeenCalledWith(config, mockDb)
     expect(res.body).toEqual({
-      ...mockNote,
-      created: mockNote.created.toISOString(),
-      modified: mockNote.modified.toISOString(),
+      ...note1,
+      created: note1.created.toISOString(),
+      modified: note1.modified.toISOString(),
     })
   })
 
   test('GET /api/notes/:noteId returns a note', async () => {
-    const res = await request(app).get('/api/notes/1')
+    asMock(noteById).mockResolvedValue(note1)
+
+    const res = await request(app).get('/api/notes/abc')
+
     expect(res.status).toBe(200)
+    expect(noteById).toHaveBeenCalledWith('abc', config, mockDb)
     expect(res.body).toEqual({
-      ...mockNote,
-      created: mockNote.created.toISOString(),
-      modified: mockNote.modified.toISOString(),
+      ...note1,
+      created: note1.created.toISOString(),
+      modified: note1.modified.toISOString(),
     })
   })
 
   test('GET /api/notes/:noteId returns 404 if not found', async () => {
-    mockNoteById.mockResolvedValueOnce(undefined)
+    asMock(noteById).mockResolvedValueOnce(undefined)
+
     const res = await request(app).get('/api/notes/doesnotexist')
+
     expect(res.status).toBe(404)
     expect(res.body).toEqual({ error: "note with ID 'doesnotexist' not found" })
   })

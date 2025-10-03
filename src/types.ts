@@ -19,7 +19,6 @@ export interface MarkdownNote {
   noteUrl?: string
   primaryKey?: number
   self: string
-  source: MarkdownNoteSource
   sourceFile?: string
   tags: string[]
   text?: string
@@ -32,8 +31,6 @@ export interface MarkdownNoteFile {
   file: string
   path: string
 }
-
-export type MarkdownNoteSource = 'bear'
 
 export interface MarkdownTag {
   icon: string
