@@ -15,6 +15,7 @@ describe('makeBearFilesExtension', () => {
       {
         href: encodeURI('/files/file1.png'),
         raw: '[file1.png](file1.png)',
+        text: 'file1.png',
         type: 'link',
       },
     ],
@@ -24,6 +25,7 @@ describe('makeBearFilesExtension', () => {
       {
         href: encodeURI('/files/file2.jpg'),
         raw: '[file2.jpg](file2.jpg)',
+        text: 'file2.jpg',
         type: 'link',
       },
     ],
@@ -33,6 +35,7 @@ describe('makeBearFilesExtension', () => {
       {
         href: 'www.google.com',
         raw: '[google](www.google.com)',
+        text: 'google',
         type: 'link',
       },
     ],

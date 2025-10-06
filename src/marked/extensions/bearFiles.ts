@@ -10,9 +10,11 @@ export function makeBearFilesExtension(files: MarkdownNoteFile[]): TokenizerExte
       const linkedFile = match[1] ? decodeURIComponent(match[1]) : ''
       const targetFile = files.find(({ file }) => file === linkedFile)
       const href = targetFile ? encodeURI(targetFile.path) : match[2]
+      const text = match[1]
       return {
         href,
         raw: match[0],
+        text,
         type: 'link',
       }
     }
