@@ -39,21 +39,13 @@ describe('server startup', () => {
     asMock(loadConfig).mockResolvedValue(config)
   })
 
-  test('opens database', async () => {
-    setupMocks()
-
-    await startup()
-
-    expect(openDatabase).toHaveBeenCalledWith(config)
-  })
-
   test('correctly registers routes', async () => {
     const { expressMock } = setupMocks()
 
     await startup()
 
     expect(expressMock.use).toHaveBeenCalledTimes(4)
-    expect(createNotesRoutes).toHaveBeenCalledWith(config, mockDb)
+    expect(createNotesRoutes).toHaveBeenCalledWith(config)
     expect(createStaticRoutes).toHaveBeenCalledWith(config)
   })
 

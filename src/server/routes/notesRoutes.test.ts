@@ -3,7 +3,7 @@ import { Database } from 'sqlite'
 import request from 'supertest'
 
 import { asMock, mockConfig, mockMarkdownNote } from '../../testing-support'
-import { allNotes, noteById, randomNote } from '../bear'
+import { allNotes, noteById, openDatabase, randomNote } from '../bear'
 import { createNotesRoutes } from './notesRoutes'
 
 jest.mock('marked', () => ({
@@ -25,8 +25,9 @@ describe('notes routes', () => {
   let app: express.Express
   beforeEach(() => {
     asMock(allNotes).mockResolvedValue([note1, note2])
+    asMock(openDatabase).mockResolvedValue(mockDb)
     app = express()
-    app.use(createNotesRoutes(config, mockDb))
+    app.use(createNotesRoutes(config))
   })
 
   test('GET /api/notes returns all notes', async () => {
