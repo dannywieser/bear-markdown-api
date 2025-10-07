@@ -1,6 +1,6 @@
 {
   "name": "@dannywieser/bear-markdown-api",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "keywords": [
     "markdown",
     "bear",
@@ -22,6 +22,7 @@
   "author": "Danny Wieser",
   "main": "dist/index.js",
   "types": "dist/types.d.ts",
+  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/types.d.ts",
