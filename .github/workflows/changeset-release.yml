@@ -21,12 +21,11 @@ jobs:
           cache: "npm"
       - name: Install dependencies
         run: npm ci
-      - name: Build
-        run: npm run build
       - name: Create Release PR / Publish
         uses: changesets/action@v1
         with:
-          publish: npx changeset publish
+          version: npm run v
+          publish: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
