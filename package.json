@@ -47,7 +47,9 @@
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' ./src/server/startup.ts",
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "v": "changeset version && npx -y synclockver",
+    "release": "npm ci && npm run build && changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "2.29.7",
