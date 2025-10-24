@@ -16,7 +16,7 @@ const bearUrl = (noteId: string, { bearConfig: { openInBearUrl } }: Config) =>
 const webUrl = (noteId: string, { noteWebPath }: Config) => `${noteWebPath}/${noteId}`
 
 const loadNotes = (db: Database): Promise<BearNote[]> =>
-  db.all(`SELECT * FROM ZSFNOTE where ZTRASHED = 0`)
+  db.all(`SELECT * FROM ZSFNOTE where ZTRASHED = 0 and ZENCRYPTED = 0`)
 
 const mapNote = async (
   note: BearNote,
