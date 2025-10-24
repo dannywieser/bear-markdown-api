@@ -4,6 +4,7 @@ import morgan from 'morgan'
 import { Config, loadConfig } from '../config'
 import { activity, header1 } from '../util'
 import { createNotesRoutes, createStaticRoutes } from './routes'
+import { createStatsRoutes } from './routes/statsRoutes'
 
 const startMessage = ({ host, port, rootDir }: Config) => {
   activity(`server running: http://${host}:${port}`)
@@ -23,6 +24,7 @@ export const startup = async (overrides?: Partial<Config>) => {
 
   app.use(createNotesRoutes(config))
   app.use(createStaticRoutes(config))
+  app.use(createStatsRoutes(config))
 
   app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     console.error(err)
